@@ -1,0 +1,363 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>GRS System v2.5</title>
+
+<style>
+:root{
+--bg:#07090d;--bg2:#0c1017;--panel:#10151e;--panel2:#151b25;--panel3:#1a212d;
+--text:#f4f7fb;--muted:#8d98a8;--muted2:#687384;--line:#252d3a;--line2:#303a49;
+--green:#43d17d;--red:#ff5b67;--blue:#5b9cff;--shadow:0 15px 40px rgba(0,0,0,.35);--radius:18px;
+}
+*{margin:0;padding:0;box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{min-height:100vh;background:radial-gradient(circle at top left,rgba(91,156,255,.08),transparent 28%),radial-gradient(circle at top right,rgba(155,124,255,.07),transparent 25%),var(--bg);color:var(--text);font-family:Inter,ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;line-height:1.5}
+button,input{font:inherit}button{cursor:pointer}
+.app{min-height:100vh;display:flex;flex-direction:column}
+.header{position:sticky;top:0;z-index:1000;height:76px;display:flex;align-items:center;justify-content:space-between;padding:0 28px;background:rgba(7,9,13,.88);backdrop-filter:blur(18px);border-bottom:1px solid var(--line)}
+.brand{display:flex;align-items:center;gap:14px}.brand-mark{width:42px;height:42px;display:flex;align-items:center;justify-content:center;border:1px solid #4a5566;border-radius:12px;font-size:13px;font-weight:900;letter-spacing:1px;background:#111722}
+.brand-info h1{font-size:17px;line-height:1.1;letter-spacing:2px}.brand-info p{color:var(--muted);font-size:11px;margin-top:3px}
+.header-right{display:flex;align-items:center;gap:10px}.status{display:flex;align-items:center;gap:7px;padding:7px 11px;border:1px solid #26392f;background:#0c1711;border-radius:999px;color:#8ee4ae;font-size:11px;font-weight:700}.status-dot{width:7px;height:7px;background:var(--green);border-radius:50%;box-shadow:0 0 12px rgba(67,209,125,.8)}.version{color:var(--muted);font-size:11px}
+.layout{width:100%;max-width:1450px;margin:0 auto;display:flex;flex:1}.sidebar{width:235px;flex-shrink:0;padding:24px 16px;border-right:1px solid var(--line)}
+.nav-title{color:var(--muted2);font-size:10px;font-weight:800;letter-spacing:1.7px;margin:6px 10px 12px}.nav{display:flex;flex-direction:column;gap:7px}.nav-btn{width:100%;display:flex;align-items:center;gap:11px;padding:12px 13px;color:#aeb7c5;background:transparent;border:1px solid transparent;border-radius:12px;text-align:left;font-size:12px;font-weight:750;transition:.2s}.nav-btn:hover,.nav-btn.active{color:#fff;background:#171d27;border-color:#303a49}.nav-btn.active{box-shadow:inset 3px 0 0 #fff}.nav-symbol{width:25px;height:25px;display:flex;align-items:center;justify-content:center;border-radius:7px;background:#0d121a;border:1px solid #222b37;font-size:9px;font-weight:900}.nav-btn.active .nav-symbol{background:#fff;color:#000}
+.main{flex:1;min-width:0;padding:28px}.page{display:none;animation:pageIn .25s ease}.page.active{display:block}@keyframes pageIn{from{opacity:0;transform:translateY(7px)}to{opacity:1;transform:translateY(0)}}
+.page-header{display:flex;justify-content:space-between;align-items:flex-end;gap:20px;margin-bottom:25px}.page-header h2{font-size:27px;letter-spacing:-.7px}.page-header p{margin-top:5px;color:var(--muted);font-size:12px}.date-box{color:var(--muted);font-size:11px;padding:9px 12px;border:1px solid var(--line);background:#0d1219;border-radius:10px}
+.card,.hero{background:linear-gradient(145deg,rgba(255,255,255,.018),transparent),var(--panel);border:1px solid var(--line);border-radius:var(--radius);box-shadow:var(--shadow)}.card-header{display:flex;align-items:center;justify-content:space-between;padding:18px 19px;border-bottom:1px solid var(--line)}.card-title{font-size:13px;font-weight:800}.card-subtitle{margin-top:3px;color:var(--muted);font-size:10px}.card-body{padding:19px}
+.hero{position:relative;overflow:hidden;padding:27px;background:radial-gradient(circle at 90% 15%,rgba(91,156,255,.14),transparent 28%),radial-gradient(circle at 70% 100%,rgba(155,124,255,.08),transparent 28%),var(--panel)}.hero-label{color:var(--muted);font-size:10px;font-weight:800;letter-spacing:2px}.hero h2{margin-top:8px;font-size:32px}.hero p{max-width:650px;margin-top:8px;color:#9ba5b4;font-size:12px}.hero-bottom{margin-top:25px;display:flex;align-items:flex-end;justify-content:space-between;gap:30px}.progress-info{flex:1}.progress-top{display:flex;align-items:center;justify-content:space-between;margin-bottom:9px}.progress-top span:first-child{color:#a9b2c0;font-size:11px}.progress-number{font-size:20px;font-weight:900}.progress-track,.unlock-track,.water-bar{width:100%;height:9px;overflow:hidden;border-radius:20px;background:#202733}.progress-fill,.unlock-fill,.water-fill{width:0;height:100%;background:linear-gradient(90deg,#fff,#aeb9c8);border-radius:20px;transition:.4s}.hero-date{text-align:right;min-width:130px}.hero-date strong,.hero-date span{display:block}.hero-date strong{font-size:12px}.hero-date span{margin-top:3px;color:var(--muted);font-size:10px}
+.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-top:17px}.stat{padding:18px;background:var(--panel);border:1px solid var(--line);border-radius:15px}.stat-label{color:var(--muted);font-size:10px;font-weight:700}.stat-value{margin-top:7px;font-size:25px;font-weight:900}.stat-small{margin-top:3px;color:var(--muted2);font-size:9px}
+.grid-2{display:grid;grid-template-columns:1.4fr 1fr;gap:17px;margin-top:17px}.section-gap{margin-top:17px}
+.mission-list,.history-list,.question-list,.setting-list{display:flex;flex-direction:column;gap:9px}.mission{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:13px;background:#0d1219;border:1px solid #202834;border-radius:13px}.mission.completed{background:#0d1511;border-color:#23402f}.mission-left{display:flex;align-items:center;gap:11px;min-width:0}.mission-check{width:29px;height:29px;display:flex;align-items:center;justify-content:center;flex-shrink:0;border:1px solid #2b3543;border-radius:9px;background:#121822;color:#687384;font-size:10px;font-weight:900}.mission.completed .mission-check{background:#173522;color:#67e69a;border-color:#2e6846}.mission-name{font-size:11px;font-weight:800}.mission-desc{margin-top:2px;color:var(--muted);font-size:9px}
+.complete-btn,.penalty-complete{padding:8px 11px;color:#111;background:#fff;border:0;border-radius:8px;font-size:9px;font-weight:900}.complete-btn.done{color:#7de5a5;background:#132519;border:1px solid #285637}
+.water-display{text-align:center;padding:12px 0 18px}.water-number{font-size:40px;font-weight:900}.water-number span{color:var(--muted);font-size:15px}.water-bar{height:10px;margin:7px 0 17px}.water-fill{background:linear-gradient(90deg,#5b9cff,#8bb9ff)}.water-buttons{display:grid;grid-template-columns:repeat(3,1fr);gap:7px}.water-btn,.secondary-btn,.answer-btn{padding:10px;color:#aab4c2;background:#111721;border:1px solid #28313e;border-radius:9px;font-size:9px;font-weight:800}.primary-btn{display:inline-flex;align-items:center;justify-content:center;padding:11px 15px;color:#080a0d;background:#fff;border:0;border-radius:9px;font-size:10px;font-weight:900}.danger-btn{color:#ff9ba2;background:#241114;border:1px solid #57252b}
+.random-box{text-align:center;padding:20px;background:#0c1118;border:1px dashed #313c4b;border-radius:13px}.random-title{color:var(--muted);font-size:9px;font-weight:800;letter-spacing:1px}.random-text{margin:10px 0 15px;font-size:13px;font-weight:800}
+.history-item{display:flex;gap:11px;padding:12px;border:1px solid #202834;background:#0d1219;border-radius:11px}.history-dot{width:8px;height:8px;margin-top:5px;flex-shrink:0;border-radius:50%;background:var(--green)}.history-content strong,.history-content span{display:block}.history-content strong{font-size:10px}.history-content span{margin-top:2px;color:var(--muted);font-size:9px}
+.workout-tabs{display:flex;gap:7px;margin-bottom:15px;overflow-x:auto}.workout-tab{padding:10px 14px;flex-shrink:0;color:#929dac;background:#0e141c;border:1px solid #252e3b;border-radius:9px;font-size:9px;font-weight:900}.workout-tab.active{color:#0a0c10;background:#fff}.workout-banner{padding:22px;background:radial-gradient(circle at right,#253249,transparent 35%),#111721;border:1px solid var(--line);border-radius:16px;margin-bottom:15px}.workout-day{color:var(--muted);font-size:10px;font-weight:800}.workout-banner h3{margin-top:5px;font-size:23px}.workout-banner p{margin-top:5px;color:var(--muted);font-size:10px}.exercise-list{display:grid;grid-template-columns:repeat(2,1fr);gap:10px}.exercise{padding:16px;background:#0d1219;border:1px solid #222b37;border-radius:13px}.exercise-number{color:#697586;font-size:9px;font-weight:900}.exercise-name{margin-top:7px;font-size:12px;font-weight:850}.exercise-note{margin-top:3px;color:var(--muted);font-size:9px}
+.big-progress{display:grid;grid-template-columns:170px 1fr;gap:20px;align-items:center;padding:22px}.circular-progress{width:140px;height:140px;position:relative;display:flex;align-items:center;justify-content:center;margin:auto}.circular-progress svg{position:absolute;width:140px;height:140px;transform:rotate(-90deg)}.circle-bg,.circle-progress{fill:none;stroke-width:9}.circle-bg{stroke:#202733}.circle-progress{stroke:#fff;stroke-linecap:round;stroke-dasharray:377;stroke-dashoffset:377;transition:.5s}.circle-content{text-align:center}.circle-content strong,.circle-content span{display:block}.circle-content strong{font-size:27px}.circle-content span{color:var(--muted);font-size:9px}.mission-status-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:9px}.status-row{padding:12px;background:#0d1219;border:1px solid #202834;border-radius:10px}.status-row span{color:var(--muted);font-size:9px}.status-row strong{display:block;margin-top:3px;font-size:12px}
+.lock-box{text-align:center;padding:35px 20px;background:#0d1219;border:1px dashed #354050;border-radius:16px}.lock-symbol{width:52px;height:52px;display:flex;align-items:center;justify-content:center;margin:0 auto 13px;border-radius:15px;background:#171d26;border:1px solid #303947;color:#a7b1bf;font-size:16px;font-weight:900}.lock-box h3{font-size:16px}.lock-box p{max-width:450px;margin:6px auto;color:var(--muted);font-size:10px}.unlock-meter{max-width:400px;margin:18px auto}.unlock-text{display:flex;justify-content:space-between;margin-bottom:7px;color:#8e99a8;font-size:9px}.question{padding:15px;background:#0d1219;border:1px solid #222b37;border-radius:13px}.question-text{font-size:11px;font-weight:800}.question-options{display:flex;gap:7px;margin-top:11px}.answer-btn.selected-yes{color:#8be6aa;background:#112217;border-color:#2c6040}.answer-btn.selected-no{color:#ff9da3;background:#261216;border-color:#5c2a31}.penalty-card{padding:16px;background:#171014;border:1px solid #4c252c;border-radius:13px}.penalty-card strong{display:block;color:#ff9ba2;font-size:11px}.penalty-card p{margin-top:4px;color:#b99da0;font-size:10px}
+.modal{position:fixed;inset:0;z-index:3000;display:none;align-items:center;justify-content:center;padding:20px;background:rgba(0,0,0,.72);backdrop-filter:blur(8px)}.modal.open{display:flex}.modal-box{width:min(450px,100%);padding:22px;background:var(--panel);border:1px solid var(--line);border-radius:18px}.modal-box h3{font-size:18px}.modal-box p{margin-top:7px;color:var(--muted);font-size:11px}.modal-actions{display:flex;gap:8px;justify-content:flex-end;margin-top:20px}
+.toast{position:fixed;right:20px;bottom:20px;z-index:4000;max-width:320px;padding:12px 15px;background:#151b25;border:1px solid #394556;border-radius:10px;color:#fff;font-size:10px;box-shadow:var(--shadow);opacity:0;transform:translateY(10px);pointer-events:none;transition:.25s}.toast.show{opacity:1;transform:translateY(0)}
+.empty{padding:20px;text-align:center;color:var(--muted);font-size:10px}
+@media(max-width:900px){.sidebar{width:190px}.stats{grid-template-columns:repeat(2,1fr)}.grid-2{grid-template-columns:1fr}}
+@media(max-width:650px){.header{padding:0 15px}.version{display:none}.sidebar{position:fixed;bottom:0;left:0;right:0;width:100%;height:auto;z-index:2000;padding:7px;background:#0b0f15;border-right:0;border-top:1px solid var(--line)}.nav{flex-direction:row;justify-content:space-around}.nav-title{display:none}.nav-btn{justify-content:center;padding:7px 4px;font-size:8px;flex-direction:column;gap:3px}.nav-symbol{width:22px;height:22px}.main{padding:18px 15px 90px}.page-header{align-items:flex-start;flex-direction:column;margin-bottom:18px}.hero h2{font-size:26px}.hero-bottom{flex-direction:column;align-items:stretch}.hero-date{text-align:left}.exercise-list{grid-template-columns:1fr}.big-progress{grid-template-columns:1fr}.mission-status-grid{grid-template-columns:1fr}.stats{gap:8px}.stat{padding:13px}}
+</style>
+<link rel="manifest" href="./manifest.json">
+<meta name="theme-color" content="#0b0b0f">
+</head>
+
+<body>
+<div class="app">
+<header class="header">
+<div class="brand"><div class="brand-mark">GRS</div><div class="brand-info"><h1>GRS SYSTEM</h1><p>GENIUS RULING SECTION ARC</p></div></div>
+<div class="header-right"><div class="status"><span class="status-dot"></span>ACTIVE</div><span class="version">v2.5</span></div>
+</header>
+
+<div class="layout">
+<aside class="sidebar">
+<div class="nav-title">SYSTEM</div>
+<nav class="nav">
+<button class="nav-btn active" data-page="system"><span class="nav-symbol">SYS</span>SYSTEM</button>
+<button class="nav-btn" data-page="missions"><span class="nav-symbol">MIS</span>COMPLETE MISSIONS</button>
+<button class="nav-btn" data-page="workout"><span class="nav-symbol">WRK</span>WORKOUT</button>
+<button class="nav-btn" data-page="penalty"><span class="nav-symbol">PEN</span>PENALTY</button>
+</nav>
+</aside>
+
+<main class="main">
+
+<section class="page active" id="page-system">
+<div class="page-header"><div><h2>System Dashboard</h2><p>Complete your missions. Build consistency. Keep the system simple.</p></div><div class="date-box" id="dateBox"></div></div>
+
+<div class="hero">
+<div class="hero-label">GRS DAILY CONTROL</div>
+<h2>Today's Mission Status</h2>
+<p>Your schedule is task-based rather than time-based. Complete what matters and keep moving forward without chasing a perfect timetable.</p>
+<div class="hero-bottom"><div class="progress-info"><div class="progress-top"><span>DAILY PROGRESS</span><span class="progress-number" id="progressNumber">0%</span></div><div class="progress-track"><div class="progress-fill" id="progressFill"></div></div></div><div class="hero-date"><strong id="heroDate"></strong><span>Local device date</span></div></div>
+</div>
+
+<div class="stats">
+<div class="stat"><div class="stat-label">COMPLETED</div><div class="stat-value" id="statCompleted">0</div><div class="stat-small">missions finished</div></div>
+<div class="stat"><div class="stat-label">PENDING</div><div class="stat-value" id="statPending">0</div><div class="stat-small">missions remaining</div></div>
+<div class="stat"><div class="stat-label">WATER</div><div class="stat-value" id="statWater">0.0 L</div><div class="stat-small">daily target 2.0 L</div></div>
+<div class="stat"><div class="stat-label">PENALTY</div><div class="stat-value" id="statPenalty">LOCKED</div><div class="stat-small">unlocks at 5 missions</div></div>
+</div>
+
+<div class="grid-2">
+<div class="card"><div class="card-header"><div><div class="card-title">TODAY'S MISSIONS</div><div class="card-subtitle">Core GRS tasks</div></div><button class="secondary-btn" id="completeAllBtn">COMPLETE SAFE TASKS</button></div><div class="card-body"><div class="mission-list" id="missionList"></div></div></div>
+
+<div>
+<div class="card"><div class="card-header"><div><div class="card-title">WATER TRACKER</div><div class="card-subtitle">Target: 2.0 L</div></div></div><div class="card-body"><div class="water-display"><div class="water-number" id="waterNumber">0.0 <span>/ 2.0 L</span></div><div class="water-bar"><div class="water-fill" id="waterFill"></div></div><div class="water-buttons"><button class="water-btn" data-water="250">+250 ml</button><button class="water-btn" data-water="500">+500 ml</button><button class="water-btn" data-water="750">+750 ml</button></div></div></div></div>
+
+<div class="card section-gap"><div class="card-header"><div><div class="card-title">RANDOM MISSION</div><div class="card-subtitle">Use when you need an extra productive task</div></div></div><div class="card-body"><div class="random-box"><div class="random-title">NEXT CHALLENGE</div><div class="random-text" id="randomText">Generate a random mission.</div><button class="primary-btn" id="randomBtn">GENERATE MISSION</button></div></div></div>
+</div>
+</div>
+
+<div class="card section-gap"><div class="card-header"><div><div class="card-title">RECENT ACTIVITY</div><div class="card-subtitle">Today's system log</div></div></div><div class="card-body"><div class="history-list" id="historyList"></div></div></div>
+</section>
+
+<section class="page" id="page-missions">
+<div class="page-header"><div><h2>Complete Missions</h2><p>Track every required task for the current GRS day.</p></div><div class="date-box" id="missionsDate"></div></div>
+<div class="card big-progress">
+<div class="circular-progress"><svg viewBox="0 0 140 140"><circle class="circle-bg" cx="70" cy="70" r="60"></circle><circle class="circle-progress" id="circleProgress" cx="70" cy="70" r="60"></circle></svg><div class="circle-content"><strong id="circlePercent">0%</strong><span>COMPLETE</span></div></div>
+<div><div class="card-title">MISSION OVERVIEW</div><p class="card-subtitle" style="margin-bottom:13px">Your progress is based on completed daily missions.</p><div class="mission-status-grid"><div class="status-row"><span>COMPLETED</span><strong id="overviewCompleted">0</strong></div><div class="status-row"><span>TOTAL</span><strong id="overviewTotal">0</strong></div><div class="status-row"><span>PENDING</span><strong id="overviewPending">0</strong></div><div class="status-row"><span>STATUS</span><strong id="overviewStatus">IN PROGRESS</strong></div></div></div>
+</div>
+<div class="card section-gap"><div class="card-header"><div><div class="card-title">DETAILED MISSION LIST</div><div class="card-subtitle">Tap complete when a task is genuinely finished.</div></div></div><div class="card-body"><div class="mission-list" id="detailedMissionList"></div></div></div>
+<div class="card section-gap"><div class="card-header"><div><div class="card-title">ACTIVITY HISTORY</div></div></div><div class="card-body"><div class="history-list" id="missionHistoryList"></div></div></div>
+</section>
+
+<section class="page" id="page-workout">
+<div class="page-header"><div><h2>Workout</h2><p>Monday–Saturday plan. Sunday is recovery.</p></div></div>
+<div class="workout-tabs" id="workoutTabs"></div>
+<div id="workoutContent"></div>
+</section>
+
+<section class="page" id="page-penalty">
+<div class="page-header"><div><h2>Penalty</h2><p>Unlocked after 5 completed missions. Consequences stay safe and productive.</p></div></div>
+<div id="penaltyContent"></div>
+</section>
+
+</main>
+</div>
+</div>
+
+<div class="modal" id="resetModal">
+<div class="modal-box"><h3>Reset today's GRS day?</h3><p>This clears today's mission progress, water, penalties and activity history. The workout plan remains unchanged.</p><div class="modal-actions"><button class="secondary-btn" id="cancelReset">CANCEL</button><button class="primary-btn danger-btn" id="confirmReset">RESET DAY</button></div></div>
+</div>
+<div class="toast" id="toast"></div>
+
+<script>
+const MISSION_DATA=[
+{id:"wake",name:"Wake up and start the day",desc:"Get out of bed and begin your day without waiting for a perfect time."},
+{id:"run",name:"Running / morning activity",desc:"Complete your planned running, workout, walk, or other morning activity safely."},
+{id:"sun",name:"Get some sunlight",desc:"Spend some time outdoors or in natural daylight."},
+{id:"food",name:"Healthy food choice",desc:"Choose a normal balanced meal instead of unnecessary junk food."},
+{id:"water",name:"Stay hydrated",desc:"Work toward the 2.0 L water target according to your normal needs."},
+{id:"lunch",name:"Have lunch",desc:"Eat a proper lunch around your usual midday window."},
+{id:"afternoon",name:"Useful afternoon choice",desc:"Choose study, a light activity, a nap/rest, or another useful task."},
+{id:"snack",name:"Healthy evening snack",desc:"Choose a sensible snack around the evening."},
+{id:"workout",name:"Evening workout",desc:"Complete your planned workout with comfortable effort and proper form."},
+{id:"sleep",name:"Prepare for sleep",desc:"Wind down and aim for your planned bedtime."}
+];
+
+const RANDOM_MISSIONS=[
+"Study or practice one useful skill for a short focused session.",
+"Organize one part of your workspace.",
+"Write down one thing you learned today.",
+"Prepare something you will need tomorrow.",
+"Finish one small pending task.",
+"Review how your day went and identify one improvement.",
+"Take one small step toward your next goal.",
+"Clean up your digital workspace for a few minutes."
+];
+
+const WORKOUTS=[
+{day:"MONDAY",title:"CHEST",items:["Incline push-up","Knee push-up","Normal push-up"]},
+{day:"TUESDAY",title:"CORE / ABS",items:["Mountain climber","Leg raises","Sit-up","Hollow hold"]},
+{day:"WEDNESDAY",title:"LEGS",items:["Squat","Knee squat"]},
+{day:"THURSDAY",title:"BICEPS",items:["Choose a comfortable biceps exercise"]},
+{day:"FRIDAY",title:"SHOULDER & BACK",items:["Dumbbell shrug","Dumbbell reverse fly","Dumbbell bent-over row"]},
+{day:"SATURDAY",title:"FOREARMS",items:["Reverse dumbbell curl","Normal dumbbell curl","Farmer hold","Dead hang"]},
+{day:"SUNDAY",title:"FULL RECOVERY",items:["Optional gentle warm-up","Mobility / easy movement","Recovery and rest"]}
+];
+
+const PENALTY_QUESTIONS=[
+{id:"missed",text:"Did you knowingly skip a mission you could reasonably have completed?"},
+{id:"waste",text:"Did you spend a large part of the day on something unproductive instead of a planned useful task?"},
+{id:"prepare",text:"Did you fail to prepare a simple next step for tomorrow?"}
+];
+
+let state;
+let activeWorkout=0;
+let randomMission="Generate a random mission.";
+
+function todayKey(){
+const d=new Date();
+return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,"0")}-${String(d.getDate()).padStart(2,"0")}`;
+}
+function freshState(){
+const missions={};MISSION_DATA.forEach(m=>missions[m.id]=false);
+return {date:todayKey(),missions,water:0,history:[],penaltyAnswers:{},activePenalties:[]};
+}
+function archivePreviousDay(old){
+try{
+const archive=JSON.parse(localStorage.getItem("GRS_SYSTEM_ARCHIVE")||"[]");
+archive.unshift({date:old.date,completed:Object.values(old.missions).filter(Boolean).length,total:MISSION_DATA.length,water:old.water,history:old.history});
+localStorage.setItem("GRS_SYSTEM_ARCHIVE",JSON.stringify(archive.slice(0,30)));
+}catch(e){}
+}
+function loadState(){
+try{
+const saved=JSON.parse(localStorage.getItem("GRS_SYSTEM_STATE"));
+if(saved&&saved.date===todayKey()){state=saved;ensureState();return}
+if(saved) archivePreviousDay(saved);
+}catch(e){}
+state=freshState();save();
+}
+function ensureState(){
+if(!state.missions)state.missions={};
+MISSION_DATA.forEach(m=>{if(typeof state.missions[m.id]!=="boolean")state.missions[m.id]=false});
+if(!Array.isArray(state.history))state.history=[];
+if(!state.penaltyAnswers)state.penaltyAnswers={};
+if(!Array.isArray(state.activePenalties))state.activePenalties=[];
+}
+function save(){localStorage.setItem("GRS_SYSTEM_STATE",JSON.stringify(state))}
+function completed(){return MISSION_DATA.filter(m=>state.missions[m.id]).length}
+function progress(){return Math.round(completed()/MISSION_DATA.length*100)}
+function fmtDate(){
+return new Date().toLocaleDateString("en-IN",{weekday:"long",day:"numeric",month:"long",year:"numeric"});
+}
+function render(){
+if(state.date!==todayKey()){archivePreviousDay(state);state=freshState();save()}
+const p=progress(),c=completed();
+document.getElementById("dateBox").textContent=fmtDate();
+document.getElementById("missionsDate").textContent=fmtDate();
+document.getElementById("heroDate").textContent=fmtDate();
+document.getElementById("progressNumber").textContent=p+"%";
+document.getElementById("progressFill").style.width=p+"%";
+document.getElementById("statCompleted").textContent=c;
+document.getElementById("statPending").textContent=MISSION_DATA.length-c;
+document.getElementById("statWater").textContent=(state.water/1000).toFixed(2)+" L";
+document.getElementById("statPenalty").textContent=c>=5?"UNLOCKED":"LOCKED";
+renderMissions();renderWater();renderHistory();renderOverview();renderPenalty();renderWorkout();
+}
+function missionHTML(m){
+const done=state.missions[m.id];
+return `<div class="mission ${done?"completed":""}"><div class="mission-left"><div class="mission-check">${done?"OK":"—"}</div><div><div class="mission-name">${escapeHTML(m.name)}</div><div class="mission-desc">${escapeHTML(m.desc)}</div></div></div><button class="complete-btn ${done?"done":""}" data-mission="${m.id}">${done?"DONE":"COMPLETE"}</button></div>`;
+}
+function renderMissions(){
+document.getElementById("missionList").innerHTML=MISSION_DATA.map(missionHTML).join("");
+document.getElementById("detailedMissionList").innerHTML=MISSION_DATA.map(missionHTML).join("");
+document.querySelectorAll("[data-mission]").forEach(b=>b.onclick=()=>toggleMission(b.dataset.mission));
+}
+function toggleMission(id){
+state.missions[id]=!state.missions[id];
+const m=MISSION_DATA.find(x=>x.id===id);
+addHistory((state.missions[id]?"Completed: ":"Uncompleted: ")+m.name,state.missions[id]?"Mission marked complete.":"Mission returned to pending.");
+save();render();
+}
+function completeAllSafe(){
+MISSION_DATA.forEach(m=>state.missions[m.id]=true);
+addHistory("Safe mission completion","All current daily tasks were marked complete.");
+save();render();toast("Daily missions updated.");
+}
+function addWater(amount){
+state.water=Math.min(state.water+amount,4000);
+addHistory("Water logged",`Added ${amount} ml.`);
+save();render();
+}
+function renderWater(){
+const pct=Math.min(state.water/2000*100,100);
+document.getElementById("waterNumber").innerHTML=(state.water/1000).toFixed(2)+' <span>/ 2.0 L</span>';
+document.getElementById("waterFill").style.width=pct+"%";
+}
+function addHistory(title,detail){
+state.history.unshift({title,detail,time:new Date().toLocaleTimeString([], {hour:"2-digit",minute:"2-digit"})});
+state.history=state.history.slice(0,40);
+}
+function renderHistory(){
+const html=state.history.length?state.history.map(h=>`<div class="history-item"><span class="history-dot"></span><div class="history-content"><strong>${escapeHTML(h.title)}</strong><span>${escapeHTML(h.detail)} • ${escapeHTML(h.time)}</span></div></div>`).join(""):'<div class="empty">No activity yet today.</div>';
+document.getElementById("historyList").innerHTML=html;
+document.getElementById("missionHistoryList").innerHTML=html;
+}
+function renderOverview(){
+const p=progress(),c=completed(),total=MISSION_DATA.length;
+document.getElementById("overviewCompleted").textContent=c;
+document.getElementById("overviewTotal").textContent=total;
+document.getElementById("overviewPending").textContent=total-c;
+document.getElementById("overviewStatus").textContent=p===100?"COMPLETE":"IN PROGRESS";
+document.getElementById("circlePercent").textContent=p+"%";
+document.getElementById("circleProgress").style.strokeDashoffset=377-(377*p/100);
+}
+function generateRandom(){
+randomMission=RANDOM_MISSIONS[Math.floor(Math.random()*RANDOM_MISSIONS.length)];
+document.getElementById("randomText").textContent=randomMission;
+addHistory("Random mission generated",randomMission);save();renderHistory();
+}
+function renderWorkout(){
+document.getElementById("workoutTabs").innerHTML=WORKOUTS.map((w,i)=>`<button class="workout-tab ${i===activeWorkout?"active":""}" data-wtab="${i}">${w.day}</button>`).join("");
+document.querySelectorAll("[data-wtab]").forEach(b=>b.onclick=()=>{activeWorkout=Number(b.dataset.wtab);renderWorkout()});
+const w=WORKOUTS[activeWorkout];
+document.getElementById("workoutContent").innerHTML=`<div class="workout-banner"><div class="workout-day">${w.day}</div><h3>${w.title}</h3><p>Use comfortable effort and proper form. Stop if you feel pain, dizziness, or unusual discomfort. Consistency matters more than exhaustion.</p></div><div class="card"><div class="card-header"><div><div class="card-title">EXERCISES</div><div class="card-subtitle">No fixed sets or reps required by this system.</div></div></div><div class="card-body"><div class="exercise-list">${w.items.map((x,i)=>`<div class="exercise"><div class="exercise-number">0${i+1}</div><div class="exercise-name">${escapeHTML(x)}</div><div class="exercise-note">${w.day==="SUNDAY"?"Recovery-focused": "Perform a comfortable amount with good form."}</div></div>`).join("")}</div></div></div>`;
+}
+function renderPenalty(){
+const c=completed();
+if(c<5){
+document.getElementById("penaltyContent").innerHTML=`<div class="lock-box"><div class="lock-symbol">LOCK</div><h3>Penalty System Locked</h3><p>Complete at least 5 missions to unlock the penalty questions.</p><div class="unlock-meter"><div class="unlock-text"><span>UNLOCK PROGRESS</span><strong>${c}/5</strong></div><div class="unlock-track"><div class="unlock-fill" style="width:${Math.min(c/5*100,100)}%"></div></div></div></div>`;
+return;
+}
+document.getElementById("penaltyContent").innerHTML=`<div class="card"><div class="card-header"><div><div class="card-title">PENALTY QUESTIONS</div><div class="card-subtitle">Answer honestly. A NO answer creates a safe, productive consequence.</div></div></div><div class="card-body"><div class="question-list">${PENALTY_QUESTIONS.map(q=>{const a=state.penaltyAnswers[q.id];return `<div class="question"><div class="question-text">${escapeHTML(q.text)}</div><div class="question-options"><button class="answer-btn ${a==="yes"?"selected-yes":""}" onclick="setPenaltyAnswer('${q.id}','yes')">YES</button><button class="answer-btn ${a==="no"?"selected-no":""}" onclick="setPenaltyAnswer('${q.id}','no')">NO</button></div></div>`}).join("")}</div><div style="margin-top:15px"><button class="primary-btn" onclick="submitPenaltyQuestions()">GENERATE CONSEQUENCE</button></div><div class="penalty-result">${renderActivePenaltiesHTML()}</div></div></div>`;
+}
+function setPenaltyAnswer(id,value){state.penaltyAnswers[id]=value;save();renderPenalty()}
+function submitPenaltyQuestions(){
+const unanswered=PENALTY_QUESTIONS.some(q=>!state.penaltyAnswers[q.id]);
+if(unanswered){toast("Answer every penalty question first.");return}
+const noCount=PENALTY_QUESTIONS.filter(q=>state.penaltyAnswers[q.id]==="no").length;
+if(noCount===0){addHistory("Penalty review","No consequence generated.");save();toast("No consequence needed.");return}
+const options=[
+"Spend a short focused session finishing one useful pending task.",
+"Organize one part of your workspace and put things back in order.",
+"Write a brief plan for tomorrow with your top 3 useful tasks.",
+"Review today's missed task and take one small constructive step toward fixing it."
+];
+const consequence=options[Math.floor(Math.random()*options.length)];
+state.activePenalties.push({id:Date.now(),text:consequence});
+addHistory("Productive consequence generated",consequence);
+state.penaltyAnswers={};save();render();
+toast("Safe productive consequence generated.");
+}
+function renderActivePenaltiesHTML(){
+if(!state.activePenalties.length)return '<div class="empty">No active penalties.</div>';
+return state.activePenalties.map(p=>`<div class="penalty-card" style="margin-top:10px"><strong>ACTIVE CONSEQUENCE</strong><p>${escapeHTML(p.text)}</p><button class="penalty-complete" onclick="completePenalty(${p.id})">COMPLETE PENALTY</button></div>`).join("");
+}
+function completePenalty(id){
+state.activePenalties=state.activePenalties.filter(p=>p.id!==id);
+addHistory("Consequence completed","Productive consequence marked complete.");
+save();render();toast("Consequence completed.");
+}
+function showPage(page){
+document.querySelectorAll(".page").forEach(p=>p.classList.remove("active"));
+document.getElementById("page-"+page).classList.add("active");
+document.querySelectorAll(".nav-btn").forEach(b=>b.classList.toggle("active",b.dataset.page===page));
+}
+function escapeHTML(s){return String(s).replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#039;"}[c]))}
+function toast(msg){const t=document.getElementById("toast");t.textContent=msg;t.classList.add("show");clearTimeout(window.__toast);window.__toast=setTimeout(()=>t.classList.remove("show"),2200)}
+
+document.querySelectorAll(".nav-btn").forEach(b=>b.onclick=()=>showPage(b.dataset.page));
+document.querySelectorAll("[data-water]").forEach(b=>b.onclick=()=>addWater(Number(b.dataset.water)));
+document.getElementById("completeAllBtn").onclick=completeAllSafe;
+document.getElementById("randomBtn").onclick=generateRandom;
+document.getElementById("cancelReset").onclick=()=>document.getElementById("resetModal").classList.remove("open");
+document.getElementById("confirmReset").onclick=()=>{archivePreviousDay(state);state=freshState();save();document.getElementById("resetModal").classList.remove("open");render();toast("New GRS day started.")};
+
+loadState();render();
+
+setInterval(()=>{
+if(state.date!==todayKey()){
+archivePreviousDay(state);
+state=freshState();
+save();
+render();
+toast("New GRS day detected automatically.");
+}
+},60000);
+
+window.GRS={
+getState:()=>JSON.parse(JSON.stringify(state)),
+resetDay:()=>{archivePreviousDay(state);state=freshState();save();render()},
+today:todayKey
+};
+</script>
+
+<script>
+if ("serviceWorker" in navigator) {
+  window.addEventListener("load", () => {
+    navigator.serviceWorker.register("./sw.js")
+      .then(() => console.log("GRS Service Worker Registered"))
+      .catch(error => console.error("Service Worker Error:", error));
+  });
+}
+</script>
+
+</body>
+</html>

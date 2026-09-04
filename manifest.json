@@ -1,0 +1,10 @@
+{
+  "name": "GRS System",
+  "short_name": "GRS",
+  "description": "GRS System v2.5 - Genius Ruling Section Arc",
+  "start_url": "./index.html",
+  "display": "standalone",
+  "background_color": "#0b0b0f",
+  "theme_color": "#0b0b0f",
+  "orientation": "portrait"
+}
